@@ -17,6 +17,33 @@ public class BigInt implements Comparable<BigInt>{
         this.value = value;
     }
 
+    //::::::::::: Static Calculator Methods ::::::::::::::::>
+    public static String multiply(String x, String y) {
+        BigInt result = new BigInt(x);
+        result.times(new BigInt(y));
+        return result.getValue();
+    }
+    public static String divide(String x, String y){
+        BigInt result = new BigInt(x);
+        result.divideBy(Integer.parseInt(y));
+        return result.getValue();
+    }
+    public static String add(String x, String y){
+        BigInt result = new BigInt(x);
+        result.plus(new BigInt(y));
+        return result.getValue();
+    }
+    public static String subtract(String x,String y){
+        BigInt result = new BigInt(x);
+        result.minus(new BigInt(y));
+        return result.getValue();
+    }
+    public static String power(String x, String y) {
+        BigInt result = new BigInt(x);
+        result.power(Integer.toString(y, 10));
+        return result.getValue();
+    }
+
     @Override
     public int compareTo(BigInt x){
         if(this.length() > x.length())
@@ -186,32 +213,33 @@ public class BigInt implements Comparable<BigInt>{
     }
     //divide by and set to new value
     public void divideBy(int divisor) {
-        StringBuilder quotient = new StringBuilder();
+        if(divisor == 0) this.setValue("undefined");
+        else{
+            StringBuilder quotient = new StringBuilder();
 
-        char[] dividend = this.chars();
+            char[] dividend = this.chars();
 
-        int overflow = 0;
+            int overflow = 0;
 
-        for(int i = 0; i < dividend.length ; i++)
-        {
-            int digit = overflow * 10 + Character.getNumericValue(dividend[i]);
-            quotient.append(digit / divisor);
-            overflow = digit % divisor;
+            for(int i = 0; i < dividend.length ; i++)
+            {
+                int digit = overflow * 10 + Character.getNumericValue(dividend[i]);
+                quotient.append(digit / divisor);
+                overflow = digit % divisor;
+            }
+            // //trim zeroes
+            while(quotient.charAt(0) == '0')
+                quotient.deleteCharAt(0);
+            this.setValue(quotient.toString());
         }
-        // //trim zeroes
-        while(quotient.charAt(0) == '0')
-            quotient.deleteCharAt(0);
-        this.setValue(quotient.toString());
-
-
     }
 
-    public static BigInt Factorial(int n) {
+    public static BigInt factorial(int n) {
         //recursively call this method, which calls recursive multiply method
         if(n > 1) {
             //n*Factorial(n)
             BigInt bigN = new BigInt(n);
-            bigN.times(Factorial(n - 1));
+            bigN.times(factorial(n - 1));
             return bigN;
         }
         return new BigInt(1);
