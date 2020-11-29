@@ -1,10 +1,11 @@
 package com.spesce;
 
+import java.util.Hashtable;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        testDivide();
-        testAddSubtractCalc(false);
+        testCalc("x");
     }
     private static void testDivide() {
         final int dividend = 21;
@@ -21,6 +22,27 @@ public class Main {
     }
 
     private static void testAddSubtractCalc(boolean add){
+        String[][] nums = setup();
+
+        for(String[] pair : nums)
+        {
+            String a = pair[0]; String b = pair[1];
+            String result = a + (add ? " + " : " - ") + b +
+                    " = " + (add ? BigCalc.add(a,b) : BigCalc.subtract(a,b));
+            System.out.println();
+        }
+    }
+    private static String doOperation(String type,String x, String y) {
+        Hashtable<String,String> op = new Hashtable<String,String>();
+        op.put("+",BigCalc.add(x,y));
+        op.put("-",BigCalc.subtract(x,y));
+        op.put("x",BigCalc.multiply(x,y));
+        //op.put("/",4);
+
+        return x + " " + type + " " + y + " = " + op.get(type);
+    }
+
+    private static String[][] setup(){
         String[][] nums =
                 {
                         {"50","20"},
@@ -30,14 +52,13 @@ public class Main {
                         {"30000315015011051959195","30000315015011051959195"},
                         {BigInt.Factorial(30).getValue(),BigInt.Factorial(5).getValue()}
                 };
+        return nums;
+    }
 
+    private static void testCalc(String operation) {
+        String[][] nums = setup();
         for(String[] pair : nums)
-        {
-            String a = pair[0]; String b = pair[1];
-            String result = a + (add ? " + " : " - ") + b +
-                    " = " + (add ? BigCalc.add(a,b) : BigCalc.subtract(a,b));
-            System.out.println(result);
-        }
+            System.out.println(doOperation(operation,pair[0],pair[1]));
     }
 
 
