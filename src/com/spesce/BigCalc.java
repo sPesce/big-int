@@ -8,7 +8,8 @@ package com.spesce;
 public class BigCalc {
 
 
-
+    //add 2 numbers
+    //ex: add("5","10) :=> "15"
     public static String add(String x,String y)
     {
         String[] xy = equalLengths(x, y);
@@ -29,42 +30,42 @@ public class BigCalc {
         }
         return (overflow == 0 ? "" : "1") + solution.reverse().toString();
     }
+    //Subtract x FROM y
+    // EX: subtract("30","20") :=> "10"
+    public static String subtract(String y, String x){
+        int yGThanX = compareNumerically(y,x);
+        if (yGThanX == 0)//numbers are equal, diff is zero
+            return "0";
+        else if(yGThanX < 0)//diff would be negative
+            return "ERROR, negative not implemented";
 
-    public static String minus(BigInt x){
-        int thisGThanX = this.compareTo(x);
-        if (thisGThanX == 0)//numbers are equal, diff is zero
-            this.setValue("0");
-        else if(thisGThanX < 0)//diff would be negative
-            this.setValue("ERROR, negative not implemented");
-        else
+        //perform subtraction
+        String[] xy = equalLengths(x,y);
+        char[] xChars = xy[0].toCharArray();
+        char[] yChars = xy[1].toCharArray();
+
+        int overflow = 0;
+        StringBuilder difference = new StringBuilder();
+        for(int i = xChars.length - 1 ; i >= 0 ; i--)//subtraction happens in reverse order
         {
-            String[] xThis = equalLengths(x, this);
-            char[] xChars = xThis[0].toCharArray();
-            char[] thisChars = xThis[1].toCharArray();
+            int xInt = Character.getNumericValue(xChars[i]);
+            int yInt = Character.getNumericValue(yChars[i]) + overflow;
+            overflow = 0;//either 0 or -1, -1 when you need to take a 1 from the next 10s place up
 
-            int overflow = 0;
-            StringBuilder difference = new StringBuilder();
-            for(int i = xChars.length - 1 ; i >= 0 ; i--)//subtraction happens in reverse order
+            if(yInt < xInt)
             {
-                int xInt = Character.getNumericValue(xChars[i]);
-                int thisInt = Character.getNumericValue(thisChars[i]) + overflow;
-                overflow = 0;//either 0 or -1, -1 when you need to take a 1 from the next 10s place up
-
-                if(thisInt < xInt)
-                {
-                    overflow = -1;
-                    thisInt += 10;
-                }
-
-                difference.append(thisInt - xInt);
+                overflow = -1;
+                yInt += 10;
             }
-            //trim zeroes
-            //note the string builder is in reverse order, so leading zeroes are now at the end
-            while(difference.charAt(difference.length() - 1) == '0')
-                difference.deleteCharAt(difference.length() - 1);
 
-            this.setValue(difference.reverse().toString());
+            difference.append(yInt - xInt);
         }
+        //trim zeroes
+        //note the string builder is in reverse order, so leading zeroes are now at the end
+        while(difference.charAt(difference.length() - 1) == '0')
+            difference.deleteCharAt(difference.length() - 1);
+
+        return difference.reverse().toString();
     }
 
     //:::::::::::::::::: Helpers ::::::::::::::::::::::::::::>

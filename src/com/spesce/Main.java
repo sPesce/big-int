@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         testDivide();
-        testAddCalc();
+        testAddSubtractCalc(false);
     }
     private static void testDivide() {
         final int dividend = 21;
@@ -20,20 +20,25 @@ public class Main {
         }
     }
 
-    private static void testAddCalc(){
+    private static void testAddSubtractCalc(boolean add){
         String[][] nums =
                 {
-                        {"20","50"},
-                        {"3001","50001"},
+                        {"50","20"},
+                        {"50001","3001"},
                         {BigInt.Factorial(10).getValue(), "30105"},
                         {"1","0"},
-                        {"2010",BigInt.Factorial(30).getValue()}
+                        {"30000315015011051959195","30000315015011051959195"},
+                        {BigInt.Factorial(30).getValue(),BigInt.Factorial(5).getValue()}
                 };
 
         for(String[] pair : nums)
         {
             String a = pair[0]; String b = pair[1];
-            System.out.println(a + " + " + b + " = " + BigCalc.add(a,b));
+            String result = a + (add ? " + " : " - ") + b +
+                    " = " + (add ? BigCalc.add(a,b) : BigCalc.subtract(a,b));
+            System.out.println(result);
         }
     }
+
+
 }
