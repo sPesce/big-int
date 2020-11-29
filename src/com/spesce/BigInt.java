@@ -1,5 +1,7 @@
 package com.spesce;
 
+import java.util.Hashtable;
+
 /**
  * Created By Steve P. on 11/25/2020
  * original package: com.spesce
@@ -40,8 +42,30 @@ public class BigInt implements Comparable<BigInt>{
     }
     public static String power(String x, String y) {
         BigInt result = new BigInt(x);
-        result.power(Integer.toString(y, 10));
+        result.power(Integer.parseInt(y));
         return result.getValue();
+    }
+    public static String calculate(String expression) {
+        String[] xOperatorY = expression.split(" ");
+        String x = xOperatorY[0];
+        String y = xOperatorY[2];
+        char operator = xOperatorY[1].charAt(0);
+
+        String result;
+        switch(operator){
+            case 'x':
+                result = BigInt.multiply(x,y); break;
+            case '+':
+                result = BigInt.add(x,y); break;
+            case '-':
+                result = BigInt.subtract(x,y); break;
+            case '/':
+                result = BigInt.divide(x,y); break;
+            case '^':
+                result = BigInt.power(x,y); break;
+            default : result = "Error, Invalid expression";
+        };
+        return result;
     }
 
     @Override
