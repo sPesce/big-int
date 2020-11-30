@@ -11,6 +11,7 @@ public class BigInt implements Comparable<BigInt>{
 
     private String value;
 
+    //::::::::::::::: Constructors :::::::::::::>
     BigInt(int value) {
         if( value < 0) System.out.println("Caution: negative numbers not currently implemented");
         this.value = Integer.toString(value);
@@ -19,7 +20,8 @@ public class BigInt implements Comparable<BigInt>{
         this.value = value;
     }
 
-    //::::::::::: Static Calculator Methods ::::::::::::::::>
+    //all of these static methods return strings (not BigInt)
+    //::::::::::: Public Static Calculator Methods ::::::::::::::::>
     public static String multiply(String x, String y) {
         BigInt result = new BigInt(x);
         result.times(new BigInt(y));
@@ -68,6 +70,7 @@ public class BigInt implements Comparable<BigInt>{
         return result;
     }
 
+    //:::::::::::::::: implemented interfaces ::::::::::::::>
     @Override
     public int compareTo(BigInt x){
         if(this.length() > x.length())
@@ -89,43 +92,17 @@ public class BigInt implements Comparable<BigInt>{
         return 0;
     }
 
-    public String getValue () {
-        return value;
-    }
-    public void setValue(String value){
-        this.value = value;
-    }
-    public void setValue(int value)
-    {
-        this.value = Integer.toString(value);
-    }
-    public char[] chars() {
-        return this.value.toCharArray();
-    }
-    public int length(){
-        return value.length();
-    }
-
-    //return two numbers as Strings of the same length (adds zeroes to front if shorter than other)
-    private static String[] equalLengths(BigInt x, BigInt y){
-        String yVal;
-        String xVal;
-
-        if(x.length() == y.length()){
-            yVal = y.getValue();
-            xVal = x.getValue();
-        } else if(x.length() > y.length())
-        {
-            xVal = x.getValue();
-            yVal =  "0".repeat(x.length() - y.length()) + y.getValue();
-        } else
-        {
-            yVal = y.getValue();
-            xVal = "0".repeat(y.length() - x.length()) + x.getValue();
-        }
-
-        return new String[] {xVal,yVal};
-    }
+    //:::::::::::: getters/setters/utility :::::::::::::>
+    public String getValue () {return value;}
+    //can set value with a string or int
+    public void setValue(String value){this.value = value;}
+    public void setValue(int value){this.value = Integer.toString(value);}
+    //return array of chars from string value
+    public char[] chars() { return this.value.toCharArray(); }
+    //return length (int) of string value
+    private int length(){ return value.length();}
+    //make a deep copy by value
+    public BigInt clone(){return new BigInt(this.getValue());}
 
     public void plus(BigInt x)
     {
@@ -149,6 +126,7 @@ public class BigInt implements Comparable<BigInt>{
         this.value = (overflow == 0 ? "" : "1") + solution.reverse().toString();
     }
 
+    //:::::::::::::: Public Instance Methods :::::::::::>
     public void minus(BigInt x){
         int thisGThanX = this.compareTo(x);
         if (thisGThanX == 0)//numbers are equal, diff is zero
@@ -198,10 +176,6 @@ public class BigInt implements Comparable<BigInt>{
         }
     }
 
-    //make a deep copy by value
-    public BigInt clone(){
-        return new BigInt(this.getValue());
-    }
 
     //'this' to the power of (exp)
     public void power(int exp)
@@ -213,28 +187,7 @@ public class BigInt implements Comparable<BigInt>{
             this.times(clone);
     }
 
-    private static String multiplyByInt(int x, String num, int powerOf10) {
-        return multiplyByInt(x, num, powerOf10, 0 , new StringBuilder());
-    }
 
-    //pops last digit, multiplies by x, adds it to string builder, sb to string on exit condition
-    private static String multiplyByInt(int x, String num,  int powerOf10, int overflow, StringBuilder sb)
-    {  //recursive exit cond. will return string from sb, add overflow if nonzero
-        if(num.length() == 0)
-        {
-            return (overflow == 0 ? "" : Integer.toString(overflow))
-                    + sb.reverse().toString()
-                    + "0".repeat(powerOf10);
-        }
-
-        //add last digit * x to string builder
-        final char digit = num.toCharArray()[num.length() - 1];
-        final int product = Character.getNumericValue(digit) * x + overflow;
-        sb.append(product % 10);
-
-        //num loses last char, overflow calculated from product
-        return multiplyByInt(x, num.substring(0, num.length() - 1), powerOf10, product / 10 , sb);
-    }
     //divide by and set to new value
     public void divideBy(int divisor) {
         if(divisor == 0) this.setValue("undefined");
@@ -268,6 +221,53 @@ public class BigInt implements Comparable<BigInt>{
         }
         return new BigInt(1);
     }
+
+    //:::::::::::: private Helpers ::::::::::::::::::>
+    //
+    //------instance methods--------->
+    private static String[] equalLengths(BigInt x, BigInt y){
+        String yVal;
+        String xVal;
+
+        if(x.length() == y.length()){
+            yVal = y.getValue();
+            xVal = x.getValue();
+        } else if(x.length() > y.length())
+        {
+            xVal = x.getValue();
+            yVal =  "0".repeat(x.length() - y.length()) + y.getValue();
+        } else
+        {
+            yVal = y.getValue();
+            xVal = "0".repeat(y.length() - x.length()) + x.getValue();
+        }
+        return new String[] {xVal,yVal};
+    }
+    //----- end instance helpers --
+    //
+    //----- Static Methods -------->
+    private static String multiplyByInt(int x, String num, int powerOf10) {
+        return multiplyByInt(x, num, powerOf10, 0 , new StringBuilder());
+    }
+
+    //pops last digit, multiplies by x, adds it to string builder, sb to string on exit condition
+    private static String multiplyByInt(int x, String num,  int powerOf10, int overflow, StringBuilder sb)
+    {  //recursive exit cond. will return string from sb, add overflow if nonzero
+        if(num.length() == 0)
+        {
+            return (overflow == 0 ? "" : Integer.toString(overflow))
+                    + sb.reverse().toString()
+                    + "0".repeat(powerOf10);
+        }
+        //add last digit * x to string builder
+        final char digit = num.toCharArray()[num.length() - 1];
+        final int product = Character.getNumericValue(digit) * x + overflow;
+        sb.append(product % 10);
+
+        //num loses last char, overflow calculated from product
+        return multiplyByInt(x, num.substring(0, num.length() - 1), powerOf10, product / 10 , sb);
+    }
+    //-------- end static helpers ------->
 }
 
 
