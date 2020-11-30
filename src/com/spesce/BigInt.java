@@ -198,7 +198,7 @@ public class BigInt implements Comparable<BigInt>{
         this.setValue(0);
 
         for(int i = 0; i < x.length(); i++)
-        {
+        {   //for each digit in x, call the multiplyByInt helper
             int digit = Character.getNumericValue(xChars[xChars.length - 1 - i]);
             this.plus(new BigInt(multiplyByInt(digit, num, i)));
         }
@@ -214,10 +214,8 @@ public class BigInt implements Comparable<BigInt>{
         if(divisor == 0) this.setValue("undefined");
         else{
             StringBuilder quotient = new StringBuilder();
-
-            char[] dividend = this.chars();
-
             int overflow = 0;
+            char[] dividend = this.chars();
 
             for(int i = 0; i < dividend.length ; i++)
             {
@@ -241,21 +239,14 @@ public class BigInt implements Comparable<BigInt>{
     // equalLengths(new BigInt("100201"),new BigInt("201")) :=> {"100201","000201"}
     // equalLengths(new BigInt("50"),new BigInt("32")) :=> {"50","32"}
     private static String[] equalLengths(BigInt x, BigInt y){
-        String yVal;
-        String xVal;
+        String yVal = y.getValue();
+        String xVal = x.getValue();
 
-        if(x.length() == y.length()){
-            yVal = y.getValue();
-            xVal = x.getValue();
-        } else if(x.length() > y.length())
-        {
-            xVal = x.getValue();
+        if(x.length() > y.length())
             yVal =  "0".repeat(x.length() - y.length()) + y.getValue();
-        } else
-        {
-            yVal = y.getValue();
+        else if (x.length() < y.length())
             xVal = "0".repeat(y.length() - x.length()) + x.getValue();
-        }
+
         return new String[] {xVal,yVal};
     }//------------------
 
