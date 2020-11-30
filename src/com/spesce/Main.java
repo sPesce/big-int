@@ -9,7 +9,12 @@ public class Main {
             System.out.println("fact("+i+"):= " + BigInt.factorial(i).getValue());
 
         System.out.println("Testing Recursive Power");
-        System.out.println(BigInt.recPower("2",3));
+        for(int i = 0; i < 300; i += 10 )
+        {
+            String result = BigInt.power("2", Integer.toString(i));
+            System.out.println("2 ^ " + i + " = " + result);
+
+        }
     }
     private static void testExpressions(){
         String[] expressions = {
