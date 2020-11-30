@@ -43,9 +43,7 @@ public class BigInt implements Comparable<BigInt>{
         return result.getValue();
     }
     public static String power(String x, String y) {
-        BigInt result = new BigInt(x);
-        result.power(Integer.parseInt(y));
-        return result.getValue();
+        return power(x,Integer.parseInt(y));
     }
     public static String calculate(String expression) {
         String[] xOperatorY = expression.split(" ");
@@ -100,10 +98,19 @@ public class BigInt implements Comparable<BigInt>{
     //return array of chars from string value
     public char[] chars() { return this.value.toCharArray(); }
     //return length (int) of string value
-    private int length(){ return value.length();}
+    public int length(){ return value.length();}
     //make a deep copy by value
     public BigInt clone(){return new BigInt(this.getValue());}
 
+
+
+    //:::::::::::::: Public Instance Methods :::::::::::>
+    //Purpose: to operate on an instance of BigInt, mutating its value to the solution
+    //Example: x.plus(y) => void | x now has a value of x.value + y.value
+    //Note: Does not Support negative numbers
+    //TODO: negative number support
+    //::::::::::::::::::::::::::::>
+    //this.value += x.value
     public void plus(BigInt x)
     {
         String[] xy = equalLengths(x, this);
@@ -125,8 +132,7 @@ public class BigInt implements Comparable<BigInt>{
 
         this.value = (overflow == 0 ? "" : "1") + solution.reverse().toString();
     }
-
-    //:::::::::::::: Public Instance Methods :::::::::::>
+    //this.value -= x.value
     public void minus(BigInt x){
         int thisGThanX = this.compareTo(x);
         if (thisGThanX == 0)//numbers are equal, diff is zero
@@ -163,7 +169,7 @@ public class BigInt implements Comparable<BigInt>{
             this.setValue(difference.reverse().toString());
         }
     }
-
+    //this.value *= x.value
     public void times(BigInt x) {
         char[] xChars = x.chars();
         String num = this.getValue();
@@ -176,17 +182,10 @@ public class BigInt implements Comparable<BigInt>{
         }
     }
 
-
-    //'this' to the power of (exp)
-    public void power(int exp)
-    {
-        BigInt clone = this.clone();
-        this.setValue(1);
-
-        for(int i = 1; i <= exp ; i++)
-            this.times(clone);
-    }
-
+    //this.value = this to power of exp
+    //exp not to be confused with math constant e
+    //does not support negative exponents, but would be easy to add because we are using natural numbers
+    public void power(int exp) { this.setValue(power(this.getValue(),exp)); }
 
     //divide by and set to new value
     public void divideBy(int divisor) {
@@ -246,10 +245,14 @@ public class BigInt implements Comparable<BigInt>{
     //----- end instance helpers --
     //
     //----- Static Methods -------->
+    //recursive exponential function
+    private static String power(String x, int n){
+        return (n <= 0) ? "1" : multiply(x,power(x,n - 1));
+    }
+    //overloading for default arguments
     private static String multiplyByInt(int x, String num, int powerOf10) {
         return multiplyByInt(x, num, powerOf10, 0 , new StringBuilder());
     }
-
     //pops last digit, multiplies by x, adds it to string builder, sb to string on exit condition
     private static String multiplyByInt(int x, String num,  int powerOf10, int overflow, StringBuilder sb)
     {  //recursive exit cond. will return string from sb, add overflow if nonzero

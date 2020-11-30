@@ -8,6 +8,8 @@ public class Main {
         for(int i = 80; i < 100 ; i++)
             System.out.println("fact("+i+"):= " + BigInt.factorial(i).getValue());
 
+        System.out.println("Testing Recursive Power");
+        System.out.println(BigInt.recPower("2",3));
     }
     private static void testExpressions(){
         String[] expressions = {
